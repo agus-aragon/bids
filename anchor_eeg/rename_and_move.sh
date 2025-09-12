@@ -72,40 +72,87 @@ cd /data/project/anchor_eeg/dataset/anchor_eeg
 # done
 
 
-for sub_dir in sub-{03..26}/; do
-    # Process physio files
-    sub_num=${sub_dir#sub-}
-    sub_num=${sub_num%/}
+# for sub_dir in sub-{03..26}/; do
+#     # Process physio files
+#     sub_num=${sub_dir#sub-}
+#     sub_num=${sub_num%/}
 
-    mkdir -p "$sub_dir"eeg
-    mkdir -p "$sub_dir"physio
-    mkdir -p "$sub_dir"beh
+#     mkdir -p "$sub_dir"eeg
+#     mkdir -p "$sub_dir"physio
+#     mkdir -p "$sub_dir"beh
 
-    if [[ -f "$sub_dir"sub${sub_num}.acq ]]; then
-        mv "$sub_dir"sub${sub_num}.acq "$sub_dir"physio/sub-${sub_num}_physio.acq
-        echo "Renamed: sub${sub_num}.acq -> sub-${sub_num}_physio.acq"
-    fi
+#     if [[ -f "$sub_dir"sub${sub_num}.acq ]]; then
+#         mv "$sub_dir"sub${sub_num}.acq "$sub_dir"physio/sub-${sub_num}_physio.acq
+#         echo "Renamed: sub${sub_num}.acq -> sub-${sub_num}_physio.acq"
+#     fi
     
-    if [[ -f "$sub_dir"sub${sub_num}.eeg ]]; then
-        mv "$sub_dir"sub${sub_num}.eeg "$sub_dir"eeg/sub-${sub_num}_eeg.eeg
-        echo "Renamed: sub${sub_num}.eeg -> sub-${sub_num}_eeg.eeg"
-    fi
-    if [[ -f "$sub_dir"sub${sub_num}.vhdr ]]; then
-        mv "$sub_dir"sub${sub_num}.vhdr "$sub_dir"eeg/sub-${sub_num}_eeg.vhdr
-        echo "Renamed: sub${sub_num}.vhdr -> sub-${sub_num}_eeg.vhdr"
-    fi
-    if [[ -f "$sub_dir"sub${sub_num}.vmrk ]]; then
-        mv "$sub_dir"sub${sub_num}.vmrk "$sub_dir"eeg/sub-${sub_num}_eeg.vmrk
-        echo "Renamed: sub${sub_num}.vmrk -> sub-${sub_num}_eeg.vmrk"
-    fi
+#     if [[ -f "$sub_dir"sub${sub_num}.eeg ]]; then
+#         mv "$sub_dir"sub${sub_num}.eeg "$sub_dir"eeg/sub-${sub_num}_eeg.eeg
+#         echo "Renamed: sub${sub_num}.eeg -> sub-${sub_num}_eeg.eeg"
+#     fi
+#     if [[ -f "$sub_dir"sub${sub_num}.vhdr ]]; then
+#         mv "$sub_dir"sub${sub_num}.vhdr "$sub_dir"eeg/sub-${sub_num}_eeg.vhdr
+#         echo "Renamed: sub${sub_num}.vhdr -> sub-${sub_num}_eeg.vhdr"
+#     fi
+#     if [[ -f "$sub_dir"sub${sub_num}.vmrk ]]; then
+#         mv "$sub_dir"sub${sub_num}.vmrk "$sub_dir"eeg/sub-${sub_num}_eeg.vmrk
+#         echo "Renamed: sub${sub_num}.vmrk -> sub-${sub_num}_eeg.vmrk"
+#     fi
     
-    for task_file in "$sub_dir"sub-${sub_num}_task-*; do
-        if [[ -f "$task_file" ]]; then
-            mv "$task_file" "$sub_dir"beh/
-            echo "Moved: $(basename "$task_file") -> beh/"
-        fi
-    done
-  
+#     for task_file in "$sub_dir"sub-${sub_num}_task-*; do
+#         if [[ -f "$task_file" ]]; then
+#             mv "$task_file" "$sub_dir"beh/
+#             echo "Moved: $(basename "$task_file") -> beh/"
+#         fi
+#     done
+
+
+# for sub_dir in sub-{28..37}/; do
+#     sub_num=${sub_dir#sub-}
+#     sub_num=${sub_num%/}
+
+#     # ---- physio ----
+#     physdir="${sub_dir}physio"
+#     if [[ -d "$physdir" ]]; then
+#         echo "Processing $physdir"
+#         for f in "$physdir"/sub${sub_num}_*.acq; do
+#             [[ -e "$f" ]] || continue
+#             task="${f##*/}"
+#             task="${task%.acq}"
+#             task="${task#sub${sub_num}_}"
+#             mv "$f" "$physdir/sub-${sub_num}_task-${task}.acq"
+#         done
+#     fi
+
+#     # ---- eeg ----
+#     eegdir="${sub_dir}eeg"
+#     if [[ -d "$eegdir" ]]; then
+#         echo "Processing $eegdir"
+#         for f in "$eegdir"/sub${sub_num}_*.{eeg,vhdr,vmrk}; do
+#             [[ -e "$f" ]] || continue
+#             ext="${f##*.}"
+#             task="${f##*/}"
+#             task="${task%.*}"
+#             task="${task#sub${sub_num}_}"
+#             mv "$f" "$eegdir/sub-${sub_num}_task-${task}.${ext}"
+#         done
+#     fi
+
+#     # ---- beh ----
+#     behdir="${sub_dir}beh"
+#     if [[ -d "$behdir" ]]; then
+#         echo "Processing $behdir"
+#         for f in "$behdir"/sub${sub_num}_*Visual*.*; do
+#             [[ -e "$f" ]] || continue
+#             ext="${f##*.}"
+#             name="${f##*/}"
+#             task=$(echo "$name" |
+#                    sed -E "s/^sub${sub_num}_([A-Za-z]+).*$/\1/")
+#             mv "$f" "$behdir/sub-${sub_num}_task-${task}.${ext}"
+#         done
+#     fi
+
+
     echo "Files moved to appropriate folders"
     echo "----------------------------------"
 done
